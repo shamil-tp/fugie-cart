@@ -7,4 +7,4 @@ const rSchema = new mongoose.Schema({
   text:String
 })
 
-module.exports=mongoose.model('Item', rSchema)
+module.exports=mongoose.model('Request', rSchema)

@@ -79,10 +79,16 @@
 
 /* Cart Footer */
 .cart-footer {
-    margin-top: auto;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+  position: fixed;
+  bottom: 64px; /* EXACT navbar height */
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 16px;
+  z-index: 900;
 }
+
 
 .grand-total-section {
     display: flex;
@@ -104,4 +110,9 @@
     padding: 1rem;
     font-size: 1.1rem;
     font-weight: 600;
+}
+
+.mobile-container {
+  padding-bottom: 140px; 
+  /* 64px navbar + ~70px cart footer */
 }

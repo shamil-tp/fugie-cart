@@ -110,9 +110,10 @@
   <div class="container">
 
     <!-- Proceed Payment -->
-    <button class="btn-pay">
-      Proceed Payment
-    </button>
+   <button class="btn-pay" onclick="startUpiPayment()">
+  Proceed Payment
+</button>
+
 
     <!-- Transaction ID Input -->
     <form action="/recharge" method="POST" class="txn-box">
@@ -159,6 +160,26 @@
     <%- include('components/navbar', { page: 'payment' }) %>
 
   </div>
+
+  <script>
+function startUpiPayment() {
+  const upiId = '7306313116@superyes';     // your UPI ID
+  const name = 'sinan';         // merchant name
+  const amount = '100';           // optional (can be dynamic later)
+  const txnNote = 'DT Cart Recharge';
+
+  const upiUrl =
+    `upi://pay?pa=${upiId}` +
+    `&pn=${encodeURIComponent(name)}` +
+    `&am=${amount}` +
+    `&cu=INR` +
+    `&tn=${encodeURIComponent(txnNote)}`;
+
+  // Redirects to UPI apps
+  window.location.href = upiUrl;
+}
+</script>
+
 
 </body>
 </html>

@@ -1,38 +1,42 @@
 const Item = require('../models/Item');
 const Purchase = require('../models/Purchase');
+const User = require('../models/User')
 
 exports.getHomePage = async (req, res) => {
-    try {
-        const items = await Item.find();
-        res.render('home', {
-            items,
-            user: req.user,
-            page: 'home'
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Server Error");
-    }
+  try {
+    const items = await Item.find();
+    const cart = req.session.cart || { items: {} };
+
+    res.render('home', {
+      items,
+      user: req.user,
+      cart,   // 👈 send cart to EJS
+      page: 'home'
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
 };
+
 
 exports.getCartPage = async (req, res) => {
     try {
-        // Find latest purchase for user that might be considered "cart"
-        // Since we don't have a distinct status, we'll try to find one or just return empty
-        // For demonstration, let's look for a purchase with no 'accepted' flag or similar if it existed?
-        // But Purchase model doesn't have status in the file I saw (User, userName, amount, items). 
-        // Recharge has 'accepted'. Purchase doesn't.
-        // Let's just return an empty array for now to prevent errors, 
-        // or if we want to show something, I'd need to create one.
-        // I'll stick to empty but correctly formatted so EJS doesn't crash.
-        
-        const cartItems = []; 
-        const total = 0;
+        const cart = req.session.cart;
+
+        if (!cart || !cart.items) {
+            return res.render('cart', {
+                user: req.user,
+                cartItems: [],
+                total: 0,
+                page: 'cart'
+            });
+        }
 
         res.render('cart', {
             user: req.user,
-            cartItems,
-            total,
+            cartItems: Object.values(cart.items),
+            total: cart.totalPrice,
             page: 'cart'
         });
     } catch (error) {
@@ -40,6 +44,7 @@ exports.getCartPage = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+
 const Recharge = require('../models/Recharge');
 
 exports.getPaymentPage = async (req, res) => {
@@ -55,3 +60,27 @@ exports.getPaymentPage = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+
+exports.buyItems = async(req,res)=>{
+    try{
+const amount = Number(req.body.amount);
+
+if (isNaN(amount)) {
+    return res.status(400).send("Invalid amount");
+}
+        const user = await User.findOne({id:req.user.id})
+        user.balance -= amount
+await user.save();
+        const items = await Item.find();
+req.session.cart = null;
+const cart = {items:{}}
+    return res.render('home', {
+      items,
+      user: user,
+      cart,   // 👈 send cart to EJS
+      page: 'home'
+    });
+    }catch(error){
+        return res.send(error)
+    }
+}

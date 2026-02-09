@@ -12,6 +12,55 @@
     color: var(--text-primary);
 }
 
+/* Top Header */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.user-greeting .hello {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.user-greeting .username {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Coin balance */
+.coin-balance {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f9fafb;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    font-weight: 600;
+}
+
+.coin-icon {
+    font-size: 1.1rem;
+}
+
+.coin-count {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* Items heading */
+.items-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+
 /* Grid Layout */
 .items-grid {
     display: grid;
@@ -117,4 +166,44 @@
     color: var(--text-primary);
     width: 1.5rem;
     text-align: center;
+}
+
+/* Request Item Card */
+.request-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px dashed var(--border-color);
+    background: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.request-card:hover {
+    background: #f3f4f6;
+    border-color: var(--primary-color);
+}
+
+.request-card-inner {
+    text-align: center;
+}
+
+.request-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.request-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+
+    /* 👇 IMPORTANT */
+    padding-bottom: 5.5rem; /* adjust to navbar height */
 }

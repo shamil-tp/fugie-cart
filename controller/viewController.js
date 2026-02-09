@@ -48,7 +48,7 @@ exports.getPaymentPage = async (req, res) => {
         res.render('payment', {
             user: req.user,
             recharges, // Passing as recharges
-            page: 'recharge'
+            page: 'payment'
         });
     } catch (error) {
         console.error(error);

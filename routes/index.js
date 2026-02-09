@@ -13,6 +13,7 @@ const { isLoggedIn } = require('../middleware/auth');
 // View Routes
 router.get('/', isLoggedIn, viewController.getHomePage);
 router.get('/cart', isLoggedIn, viewController.getCartPage);
+router.get('/recharge', isLoggedIn, viewController.getPaymentPage);
 
 // Auth Routes
 router.use('/auth', authRoutes);

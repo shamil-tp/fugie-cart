@@ -40,3 +40,18 @@ exports.getCartPage = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+const Recharge = require('../models/Recharge');
+
+exports.getPaymentPage = async (req, res) => {
+    try {
+        const recharges = await Recharge.find({ user: req.user._id }).sort({ _id: -1 });
+        res.render('payment', {
+            user: req.user,
+            recharges, // Passing as recharges
+            page: 'payment'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+};

@@ -7,7 +7,8 @@ const urls = [
     'http://localhost:3000/home.css',
     'http://localhost:3000/cart.css',
     'http://localhost:3000/login.css',
-    'http://localhost:3000/logo.png'
+    'http://localhost:3000/logo.png',
+    'http://localhost:3000/recharge'
 ];
 
 console.log("Checking endpoints...");

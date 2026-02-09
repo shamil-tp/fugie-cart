@@ -13,4 +13,4 @@ const pSchema = new mongoose.Schema({
   }
 })
 
-module.exports=mongoose.model('Purchase', pSchema)
+module.exports=mongoose.model('Recharge', pSchema)

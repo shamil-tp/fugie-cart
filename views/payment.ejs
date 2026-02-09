@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Recharge</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
+      color: #020617;
+      padding-bottom: 90px;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    .btn-pay {
+      width: 100%;
+      height: 52px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .txn-box {
+      margin-top: 20px;
+    }
+
+    .txn-box label {
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .txn-box input {
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #cbd5f5;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .txn-box input:focus {
+      border-color: #2563eb;
+    }
+
+    .history {
+      margin-top: 32px;
+    }
+
+    .history h4 {
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .history-item {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+
+    .amount {
+      font-weight: 600;
+    }
+
+    .status {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .accepted {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .pending {
+      background: #fef9c3;
+      color: #854d0e;
+    }
+
+    /* Desktop block */
+    @media (min-width: 768px) {
+      body {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- Proceed Payment -->
+    <button class="btn-pay">
+      Proceed Payment
+    </button>
+
+    <!-- Transaction ID Input -->
+    <form action="/recharge" method="POST" class="txn-box">
+      <label>Transaction ID (last 4 digits)</label>
+      <input
+        type="text"
+        name="transactionid"
+        maxlength="4"
+        pattern="[0-9]{4}"
+        inputmode="numeric"
+        placeholder="XXXX"
+        required
+      />
+
+      <button type="submit" class="btn-pay" style="margin-top:14px">
+        Submit
+      </button>
+    </form>
+
+    <!-- Payment History -->
+    <div class="history">
+      <h4>Payment History</h4>
+
+      <% if (purchases && purchases.length > 0) { %>
+        <% purchases.forEach(p => { %>
+          <div class="history-item">
+            <div>
+              <div class="amount">₹ <%= p.amount %></div>
+              <small class="text-muted">Txn: **** <%= p.transactionid %></small>
+            </div>
+
+            <% if (p.accepted) { %>
+              <span class="status accepted">Accepted</span>
+            <% } else { %>
+              <span class="status pending">Pending</span>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p style="color:#64748b;font-size:14px">No payments yet</p>
+      <% } %>
+    </div>
+
+  </div>
+
+</body>
+</html>

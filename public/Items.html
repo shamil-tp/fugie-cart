@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Items List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./Items.css">
+</head>
+<body>
+    <div class="mobile-container">
+        <header class="page-header">
+            <h1>Items List</h1>
+        </header>
+        
+        <div class="items-grid">
+            <div class="item-card">
+                <div class="item-image-container">
+                    <img src="./images/pic_10.jpg" alt="Stylish Shoe" class="item-image">
+                </div>
+                <div class="item-details">
+                    <h3 class="item-name">Neon Kicks</h3>
+                    <p class="item-price">$120.00</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+                        <span class="qty-value">0</span>
+                        <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="item-image-container">
+                    <img src="./images/pic_11.jpg" alt="Classic Sneaker" class="item-image">
+                </div>
+                <div class="item-details">
+                    <h3 class="item-name">Classic White</h3>
+                    <p class="item-price">$95.00</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+                        <span class="qty-value">0</span>
+                        <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="item-image-container">
+                    <img src="./images/pic_12.jpg" alt="Running Shoe" class="item-image">
+                </div>
+                <div class="item-details">
+                    <h3 class="item-name">Speed Runner</h3>
+                    <p class="item-price">$110.00</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+                        <span class="qty-value">0</span>
+                        <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="item-image-container">
+                    <img src="./images/pic_16.jpg" alt="Urban Boot" class="item-image">
+                </div>
+                <div class="item-details">
+                    <h3 class="item-name">Urban Boot</h3>
+                    <p class="item-price">$145.00</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+                        <span class="qty-value">0</span>
+                        <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="item-card">
+                <div class="item-image-container">
+                    <img src="./images/pic_17.jpg" alt="Sporty Red" class="item-image">
+                </div>
+                <div class="item-details">
+                    <h3 class="item-name">Sporty Red</h3>
+                    <p class="item-price">$105.00</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+                        <span class="qty-value">0</span>
+                        <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                 <div class="item-image-container">
+                    <img src="./images/pic_18.jpg" alt="Daily Walker" class="item-image">
+                </div>
+                <div class="item-details">
+                    <h3 class="item-name">Daily Walker</h3>
+                    <p class="item-price">$85.00</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+                        <span class="qty-value">0</span>
+                        <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="desktop-message">
+        <p>This application is only available on mobile devices.</p>
+    </div>
+
+    <script>
+        document.querySelectorAll('.item-card').forEach(card => {
+            const minusBtn = card.querySelector('.minus');
+            const plusBtn = card.querySelector('.plus');
+            const qtyDisplay = card.querySelector('.qty-value');
+            
+            let quantity = 0;
+
+            const updateDisplay = () => {
+                qtyDisplay.textContent = quantity;
+                minusBtn.disabled = quantity <= 0;
+                minusBtn.style.opacity = quantity <= 0 ? '0.5' : '1';
+            };
+
+            // Initial state
+            updateDisplay();
+
+            plusBtn.addEventListener('click', () => {
+                quantity++;
+                updateDisplay();
+            });
+
+            minusBtn.addEventListener('click', () => {
+                if (quantity > 0) {
+                    quantity--;
+                    updateDisplay();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

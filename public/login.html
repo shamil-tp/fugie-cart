@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="brand-section">
+            <img src="brand_logo.svg" alt="Brand Logo" class="brand-image">
+        </div>
+        <div class="login-section">
+            <div class="input-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" placeholder="1234567890" inputmode="numeric" maxlength="10">
+            </div>
+            
+            <button id="send-otp-btn" class="action-btn">Send OTP</button>
+
+            <div id="otp-input-container" class="hidden">
+                <div class="input-group">
+                    <label for="otp">OTP Code</label>
+                    <input type="text" id="otp" placeholder="123456" inputmode="numeric" maxlength="6">
+                </div>
+            </div>
+
+            <button id="login-btn" class="primary-btn">Verify & Login</button>
+        </div>
+    </div>
+    
+    <div class="desktop-message">
+        <p>This application is only available on mobile devices.</p>
+    </div>
+
+    <script>
+        const sendOtpBtn = document.getElementById('send-otp-btn');
+        const otpInputContainer = document.getElementById('otp-input-container');
+        const otpInput = document.getElementById('otp');
+        const mobileInput = document.getElementById('mobile');
+        const loginBtn = document.getElementById('login-btn');
+        
+        // Create error message element
+        const errorMsg = document.createElement('p');
+        errorMsg.style.color = '#ef4444';
+        errorMsg.style.fontSize = '0.75rem';
+        errorMsg.style.marginTop = '0.25rem';
+        errorMsg.style.display = 'none';
+        mobileInput.parentNode.appendChild(errorMsg);
+
+        sendOtpBtn.addEventListener('click', () => {
+            const mobileNumber = mobileInput.value.trim();
+            
+            // Regex for exactly 10 digits
+            const mobileRegex = /^\d{10}$/;
+
+            if (!mobileRegex.test(mobileNumber)) {
+                errorMsg.textContent = "Please enter a valid 10-digit mobile number.";
+                errorMsg.style.display = 'block';
+                mobileInput.style.borderColor = '#ef4444';
+                return;
+            }
+
+            // Clear error if valid
+            errorMsg.style.display = 'none';
+            mobileInput.style.borderColor = '#e5e7eb';
+
+            // Show OTP input container with animation
+            if (otpInputContainer.classList.contains('hidden')) {
+                otpInputContainer.classList.remove('hidden');
+                otpInputContainer.classList.add('fade-in-up');
+                
+                otpInput.focus();
+                sendOtpBtn.textContent = "Resend OTP";
+                sendOtpBtn.classList.add('secondary');
+            } else {
+                otpInput.focus();
+                console.log("Resending OTP...");
+            }
+        });
+        
+        // Clear error on input
+        mobileInput.addEventListener('input', () => {
+             errorMsg.style.display = 'none';
+             mobileInput.style.borderColor = '#e5e7eb';
+        });
+
+        // Basic check on Verify button
+        loginBtn.addEventListener('click', () => {
+            if (otpInputContainer.classList.contains('hidden')) {
+                errorMsg.textContent = "Please send OTP first.";
+                errorMsg.style.display = 'block';
+                return;
+            }
+            if (otpInput.value.length < 6) {
+                alert("Please enter a valid 6-digit OTP.");
+            } else {
+                alert("Login Verified!");
+            }
+        });
+    </script>
+</body>
+</html>

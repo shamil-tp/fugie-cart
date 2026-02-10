@@ -6,6 +6,8 @@ const isLoggedIn = (req, res, next) => {
         if (!token) {
             return res.redirect('/login')
         }
+        console.log(token)
+        console.log(token)
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         req.user = decoded
         console.log(req.user)

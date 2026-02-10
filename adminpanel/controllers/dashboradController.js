@@ -1,9 +1,8 @@
 const Item = require('../models/item');
 const User = require('../models/user');
-const Payment = require('../models/payment');
 const Recharge = require('../models/recharge');
 const Request = require('../models/request');
-
+const Purchase = require('../models/Purchase');
 exports.getDashboard = async (req, res) => {
     try {
         const items = await Item.find();
@@ -33,7 +32,7 @@ exports.getRequests = async (req, res) => {
 exports.getUsers = async (req, res) => {
     try {
         const users = await User.find();
-        res.render('users', { users,page:'users' });
+        res.render('user', { users,page:'users' });
     } catch (error) {
         res.status(500).send('Error fetching users');
     }
@@ -41,8 +40,8 @@ exports.getUsers = async (req, res) => {
 
 exports.getPayments = async (req, res) => {
     try {
-        const payments = await Payment.find();
-        res.render('payments', { payments,page:'payments' });
+        const purchases = await Purchase.find();
+        res.render('paymentHistory', { purchases,page:'payments' });
     } catch (error) {
         res.status(500).send('Error fetching payments');
     }
@@ -51,7 +50,7 @@ exports.getPayments = async (req, res) => {
 exports.getRecharges = async (req, res) => {
     try {
         const recharges = await Recharge.find();
-        res.render('recharges', { recharges,page:'recharges' });
+        res.render('rechargeHistory', { recharges,page:'recharges' });
     } catch (error) {
         res.status(500).send('Error fetching recharges');
     }

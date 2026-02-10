@@ -19,8 +19,18 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+        .logout-btn {
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
         .container { padding: 16px; max-width: 1000px; margin: 0 auto; }
         .rchg-card {
             background-color: #ffffff;
@@ -67,6 +77,9 @@
 <body>
     <div class="header">
         <h1>Recharge History</h1>
+        <a href="/logout" class="logout-btn" title="Logout">
+            <i class="bi bi-box-arrow-right"></i>
+        </a>
     </div>
 
     <div class="container">

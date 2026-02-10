@@ -32,3 +32,19 @@ exports.ifLoggedIn = async (req, res, next) => {
     }
     next();
 };
+
+exports.isAuthenticated = async (req, res, next) => {
+    try {
+        const { token } = req.cookies;
+
+        if (!token) {
+            return res.redirect('/auth/login');
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = await User.findById(decoded.id);
+        next();
+    } catch (error) {
+        return res.redirect('/auth/login');
+    }
+};

@@ -7,15 +7,23 @@ const sendToken = (user, statusCode, res) => {
         expires: new Date(
             Date.now() + (process.env.COOKIE_EXPIRE || 30) * 24 * 60 * 60 * 1000
         ),
-        httpOnly: true
+        httpOnly: true,
+        sameSite: 'lax'
     };
 
-    res.status(statusCode).cookie('token', token, options).json({
-        success: true,
-        user,
-        token
-    });
+    res
+        .status(statusCode)
+        .cookie('token', token, options)
+        .json({
+            success: true,
+            user: {
+                phone: user.phone,
+                name: user.name
+            },
+            needsName: !user.name   // ⭐ THIS IS THE KEY
+        });
 };
+
 
 exports.login = async (req, res) => {
     try {
@@ -31,12 +39,8 @@ exports.login = async (req, res) => {
         let user = await User.findOne({ phone });
 
         if (!user) {
-        return res.status(400).json({
-        success: false,
-        message: 'User not found. Please signup first.'
-    });
-}
-
+            user = await User.create({ phone });
+        }
 
         // Generate 4 digit OTP
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -46,7 +50,7 @@ exports.login = async (req, res) => {
 
         // In a real app, send SMS here.
         // For development, we return it in the response.
-        
+
         res.status(200).json({
             success: true,
             message: `OTP sent to ${phone}`,
@@ -116,6 +120,31 @@ exports.getLoginPage = (req, res) => {
     res.render('login');
 };
 
+exports.saveName = async (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({
+      success: false,
+      message: 'Name is required'
+    });
+  }
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Unauthorized'
+    });
+  }
+
+  req.user.name = name;
+  await req.user.save();
+
+  res.json({
+    success: true,
+    name: req.user.name
+  });
+};
 
 
 

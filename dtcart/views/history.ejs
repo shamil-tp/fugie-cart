@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment History</title>
+
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/home.css" />
+
+  <style>
+    .history-container {
+      padding: 1rem;
+    }
+
+    .history-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .history-card {
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #fff;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .history-date {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .history-amount {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .items-list {
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.6rem;
+      margin-top: 0.6rem;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .item-name {
+      color: var(--text-primary);
+    }
+
+    .item-price {
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .empty-history {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mobile-container">
+
+    <%- include('components/topBar', { user }) %>
+
+    <div class="history-container">
+      <h2 class="history-title">Payment History</h2>
+
+      <% if (purchases && purchases.length > 0) { %>
+        <% purchases.forEach(purchase => { %>
+          <div class="history-card">
+
+            <!-- Header -->
+            <div class="history-header">
+              <span class="history-date">
+                <%= purchase.date %>
+              </span>
+              <span class="history-amount">
+                ₹<%= purchase.amount %>
+              </span>
+            </div>
+
+            <!-- Items -->
+            <div class="items-list">
+              <% purchase.items.forEach(item => { %>
+                <div class="item-row">
+                  <span class="item-name">
+                    <%= item.item %>
+                  </span>
+                  <span class="item-price">
+                    ₹<%= item.amount %> × <%= item.quantity %>
+                  </span>
+                </div>
+              <% }) %>
+            </div>
+
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p class="empty-history">No payment history found</p>
+      <% } %>
+    </div>
+
+    <%- include('components/navbar', { page: 'history' }) %>
+
+  </div>
+</body>
+</html>

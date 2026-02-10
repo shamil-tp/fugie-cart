@@ -5,6 +5,7 @@ const pSchema = new mongoose.Schema({
   user:String,
   userName:String,
   amount:Number,
+  date:String,
   items:[
     {
         item:String,

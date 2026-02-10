@@ -72,6 +72,7 @@ if (isNaN(amount)) {
         user.balance -= amount
 await user.save();
         const items = await Item.find();
+        console.log(req.session.cart)
 req.session.cart = null;
 const cart = {items:{}}
     return res.render('home', {
@@ -84,3 +85,17 @@ const cart = {items:{}}
         return res.send(error)
     }
 }
+
+exports.getHistoryPage = async (req, res) => {
+    try {
+        const purchases = await Purchase.find({ user: req.user._id }).sort({ _id: -1 });
+        res.render('history', {
+            user: req.user,
+            payments:purchases,
+            page: 'history'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+};

@@ -17,6 +17,7 @@ router.get('/', isLoggedIn, viewController.getHomePage);
 router.get('/cart', isLoggedIn, viewController.getCartPage);
 router.post('/cart', isLoggedIn, viewController.buyItems);
 router.get('/recharge', isLoggedIn, viewController.getPaymentPage);
+router.get('/history', isLoggedIn, viewController.getHistoryPage);
 
 // Auth Routes
 router.use('/auth', authRoutes);

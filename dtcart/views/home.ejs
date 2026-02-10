@@ -6,24 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Items List</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/home.css">
+  <style>
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 320px;
+    }
+  </style>
 </head>
 
 <body>
   <div class="mobile-container">
-    <header class="top-bar">
-      <div class="user-greeting">
-        <p class="hello">Hello,</p>
-        <h1 class="username"><%= user.name %></h1>
-      </div>
+    <%- include('components/topBar', { user }) %>
 
-      <div class="coin-balance">
-        <span class="coin-icon">🪙</span>
-        <span class="coin-count"><%= user.balance %></span>
-      </div>
-    </header>
 
     <h2 class="items-heading">Items</h2>
 
@@ -66,42 +80,102 @@
     <%- include('components/navbar', { page: 'home' }) %>
   </div>
 
+  <button id="buyFab" class="buy-fab hidden" onclick="window.location.href='/cart'">
+    🛒 Buy
+  </button>
+
+
+  <div id="nameModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Welcome 👋</h2>
+      <p>Please enter your name</p>
+      <input type="text" id="nameInput" placeholder="Your name" />
+      <button id="saveNameBtn">Save</button>
+    </div>
+  </div>
+
   <div class="desktop-message">
     <p>This application is only available on mobile devices.</p>
   </div>
 <script>
-document.querySelectorAll('.item-card').forEach(card => {
-  const itemId = card.dataset.id;
-  const plusBtn = card.querySelector('.plus');
-  const minusBtn = card.querySelector('.minus');
-  const qtySpan = card.querySelector('.qty-value');
+  const needsName = <%= !user.name %>;
 
-  let quantity = parseInt(qtySpan.textContent) || 0; // ✅ sync from server
+  if (needsName) {
+    document.getElementById('nameModal').classList.remove('hidden');
+  }
 
-  plusBtn.addEventListener('click', async () => {
-    quantity++;
-    qtySpan.textContent = quantity;
+  document.getElementById('saveNameBtn')?.addEventListener('click', async () => {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) return alert('Please enter your name');
 
-    await fetch('/cart/add', {
+    const res = await fetch('/auth/save-name', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ itemId, qty: 1 })
+      body: JSON.stringify({ name })
     });
+
+    const data = await res.json();
+    if (data.success) {
+      document.querySelector('.username').textContent = data.name;
+      document.getElementById('nameModal').classList.add('hidden');
+    }
   });
 
-  minusBtn.addEventListener('click', async () => {
-    if (quantity > 0) {
-      quantity--;
+  const buyFab = document.getElementById('buyFab');
+
+  // 🔢 Calculate initial cart count from server-rendered values
+  let cartCount = 0;
+  document.querySelectorAll('.qty-value').forEach(qty => {
+    cartCount += parseInt(qty.textContent) || 0;
+  });
+
+  // Show FAB if page loads with items
+  if (cartCount > 0) {
+    buyFab.classList.remove('hidden');
+  }
+
+  document.querySelectorAll('.item-card').forEach(card => {
+    const itemId = card.dataset.id;
+    const plusBtn = card.querySelector('.plus');
+    const minusBtn = card.querySelector('.minus');
+    const qtySpan = card.querySelector('.qty-value');
+
+    let quantity = parseInt(qtySpan.textContent) || 0;
+
+    plusBtn.addEventListener('click', async () => {
+      quantity++;
+      cartCount++;
+
       qtySpan.textContent = quantity;
+      buyFab.classList.remove('hidden'); // ✅ fade in
 
       await fetch('/cart/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemId, qty: -1 })
+        body: JSON.stringify({ itemId, qty: 1 })
       });
-    }
+    });
+
+    minusBtn.addEventListener('click', async () => {
+      if (quantity > 0) {
+        quantity--;
+        cartCount--;
+
+        qtySpan.textContent = quantity;
+
+        // ✅ Fade out when cart becomes empty
+        if (cartCount === 0) {
+          buyFab.classList.add('hidden');
+        }
+
+        await fetch('/cart/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId, qty: -1 })
+        });
+      }
+    });
   });
-});
 </script>
 
 

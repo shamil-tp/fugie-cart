@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recharge History</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #ffffff;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+        .container { padding: 16px; max-width: 1000px; margin: 0 auto; }
+        .rchg-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .rchg-user {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .rchg-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rchg-amount {
+            font-weight: 600;
+            font-size: 16px;
+            color: #2563eb;
+        }
+        .rchg-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 500;
+        }
+        .status-accepted {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .rchg-meta {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Recharge History</h1>
+    </div>
+
+    <div class="container">
+        <% if (recharges && recharges.length > 0) { %>
+            <% recharges.forEach(r => { %>
+                <div class="rchg-card">
+                    <div class="rchg-user"><%= r.userName %></div>
+                    <div class="rchg-details">
+                        <div class="rchg-amount">+ ₹<%= r.amount %></div>
+                        <% if(r.accepted) { %>
+                            <span class="rchg-status status-accepted">Accepted</span>
+                        <% } else { %>
+                            <span class="rchg-status status-pending">Pending</span>
+                        <% } %>
+                    </div>
+                    <div class="rchg-meta">
+                        <div>Txn: <%= r.transactionid %></div>
+                        <% if(r.text) { %><div>Note: <%= r.text %></div><% } %>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                No recharges found.
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('partials/navbar', { page: 'recharges' }) %>
+</body>
+</html>

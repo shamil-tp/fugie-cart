@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #ffffff;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+        .container { padding: 16px; max-width: 1000px; margin: 0 auto; }
+        .request-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .req-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .req-user {
+            font-weight: 500;
+            color: #0f172a;
+        }
+        .req-id {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .req-body {
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.5;
+            background-color: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Item Requests</h1>
+    </div>
+
+    <div class="container">
+        <% if (requests && requests.length > 0) { %>
+            <% requests.forEach(req => { %>
+                <div class="request-card">
+                    <div class="req-header">
+                        <div class="req-user"><%= req.userName %></div>
+                        <div class="req-id">#<%= req.id %></div>
+                    </div>
+                    <div class="req-body">
+                        <%= req.text %>
+                    </div>
+                    <!-- Actions could go here -->
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                No requests found.
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('partials/navbar', { page: 'requests' }) %>
+</body>
+</html>

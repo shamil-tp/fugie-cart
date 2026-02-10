@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding-bottom: 70px; /* Space for bottom navbar */
+        }
+        .header {
+            background-color: #ffffff;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .container {
+            padding: 16px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .item-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+        .item-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: #e2e8f0;
+            margin-right: 16px;
+        }
+        .item-info {
+            flex: 1;
+        }
+        .item-name {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .item-id {
+            color: #64748b;
+            font-size: 12px;
+        }
+        .item-stock {
+            text-align: right;
+        }
+        .stock-val {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+        .stock-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+        /* Mobile & Laptop only view check via JS or assume responsive is enough as requested */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Dashboard - Stock</h1>
+    </div>
+
+    <div class="container">
+        <% if (items && items.length > 0) { %>
+            <% items.forEach(item => { %>
+                <div class="item-card">
+                    <img src="<%= item.img %>" alt="<%= item.name %>" class="item-img" onerror="this.src='https://via.placeholder.com/50'">
+                    <div class="item-info">
+                        <div class="item-name"><%= item.name %></div>
+                        <div class="item-id">ID: <%= item.id || item._id %></div>
+                    </div>
+                    <div class="item-stock">
+                        <div class="stock-val"><%= item.quantity %></div>
+                        <div class="stock-label">In Stock</div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                No items found.
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('partials/navbar', { page: 'dashboard' }) %>
+</body>
+</html>

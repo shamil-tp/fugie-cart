@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #ffffff;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+        .container { padding: 16px; max-width: 1000px; margin: 0 auto; }
+        .user-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info { flex: 1; }
+        .user-name { font-weight: 500; font-size: 16px; }
+        .user-phone { font-size: 13px; color: #64748b; margin-top: 2px; }
+        .user-balance {
+            text-align: right;
+        }
+        .balance-val {
+            font-weight: 600;
+            color: #10b981;
+        }
+        .balance-label {
+            font-size: 11px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Users List</h1>
+    </div>
+
+    <div class="container">
+        <% if (users && users.length > 0) { %>
+            <% users.forEach(user => { %>
+                <div class="user-card">
+                    <div class="user-info">
+                        <div class="user-name"><%= user.name %></div>
+                        <div class="user-phone"><%= user.phone %></div>
+                    </div>
+                    <div class="user-balance">
+                        <div class="balance-val">₹<%= user.balance %></div>
+                        <span class="balance-label">Balance</span>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                No users found.
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('partials/navbar', { page: 'users' }) %>
+</body>
+</html>

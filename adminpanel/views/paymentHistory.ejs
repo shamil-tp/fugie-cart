@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment History</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+        .header {
+            background-color: #ffffff;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+        .container { padding: 16px; max-width: 1000px; margin: 0 auto; }
+        .txn-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .txn-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .txn-user { font-weight: 500; font-size: 15px; }
+        .txn-amount { font-weight: 600; color: #ef4444; } /* Red for outgoing/spent */
+        .txn-items {
+            font-size: 13px;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        .txn-id {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 8px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Payment History</h1>
+    </div>
+
+    <div class="container">
+        <% if (purchases && purchases.length > 0) { %>
+            <% purchases.forEach(purchase => { %>
+                <div class="txn-card">
+                    <div class="txn-top">
+                        <div class="txn-user"><%= purchase.userName %></div>
+                        <div class="txn-amount">- ₹<%= purchase.amount %></div>
+                    </div>
+                    <div class="txn-items">
+                        <% if(purchase.items && purchase.items.length > 0) { %>
+                            <% purchase.items.forEach(pi => { %>
+                                <div class="item-row">
+                                    <span><%= pi.item %> (x<%= pi.quantity %>)</span>
+                                    <span>₹<%= pi.amount %></span>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <span>No items listed</span>
+                        <% } %>
+                    </div>
+                    <div class="txn-id">Txn ID: <%= purchase.id || purchase._id %></div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                No payment history.
+            </div>
+        <% } %>
+    </div>
+
+    <%- include('partials/navbar', { page: 'payments' }) %>
+</body>
+</html>

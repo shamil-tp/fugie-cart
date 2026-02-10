@@ -18,7 +18,17 @@ router.post('/add', isLoggedIn, async (req, res) => {
     const item = await Item.findById(itemId);
 
     if (!item) {
-        return res.status(404).json({ success: false });
+        return res.status(404).json({ success: false, message: "Item not found" });
+    }
+
+    // 🛑 Stock Validation
+    const currentQtyInCart = cart.items[itemId]?.quantity || 0;
+    if (qty > 0 && currentQtyInCart + qty > item.quantity) {
+        return res.status(400).json({ 
+            success: false, 
+            message: `Only ${item.quantity} items in stock.`,
+            available: item.quantity
+        });
     }
 
     if (!cart.items[itemId]) {
@@ -39,7 +49,14 @@ router.post('/add', isLoggedIn, async (req, res) => {
         delete cart.items[itemId];
     }
 
-    res.json({ success: true, cart });
+    // 💾 Save session explicitly to prevent race conditions during rapid clicks
+    req.session.save((err) => {
+        if (err) {
+            console.error("Session Save Error:", err);
+            return res.status(500).json({ success: false, message: "Error saving cart" });
+        }
+        res.json({ success: true, cart });
+    });
 });
 
 module.exports = router;

@@ -31,6 +31,46 @@
       width: 90%;
       max-width: 320px;
     }
+
+    /* Out of stock logic */
+    .item-card.out-of-stock {
+      opacity: 0.6;
+      filter: grayscale(0.4);
+      pointer-events: none;
+    }
+    
+    .stock-out-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #ef4444;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+
+    .item-name {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .stock-count {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    .stock-out-text {
+      color: #ef4444;
+      font-size: 12px;
+      font-weight: 600;
+    }
   </style>
 </head>
 
@@ -45,20 +85,30 @@
     <div class="items-grid">
       <% if (items && items.length > 0) { %>
       <% items.forEach(function(item) { %>
-      <div class="item-card" data-id="<%= item._id %>">
+      <div class="item-card <%= item.quantity <= 0 ? 'out-of-stock' : '' %>" data-id="<%= item._id %>" data-stock="<%= item.quantity %>">
         <div class="item-image-container">
           <img src="<%= item.img || './images/pic_10.jpg' %>" alt="<%= item.name %>" class="item-image" onerror="this.src='./images/pic_10.jpg'">
+          <% if (item.quantity <= 0) { %>
+            <div class="stock-out-badge">Stock Out</div>
+          <% } %>
         </div>
         <div class="item-details">
-          <h3 class="item-name"><%= item.name %></h3>
-          <p class="item-price">$<%= item.price.toFixed(2) %></p>
-          <div class="quantity-controls">
-            <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
-            <span class="qty-value">
-              <%= cart.items[item._id]?.quantity || 0 %>
-            </span>
-            <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+          <div class="item-header">
+            <h3 class="item-name"><%= item.name %></h3>
+            <span class="stock-indicator">Stock: <%= item.quantity %></span>
           </div>
+          <p class="item-price">$<%= item.price.toFixed(2) %></p>
+          <% if (item.quantity > 0) { %>
+            <div class="quantity-controls">
+              <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+              <span class="qty-value">
+                <%= cart.items[item._id]?.quantity || 0 %>
+              </span>
+              <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+            </div>
+          <% } else { %>
+            <p class="stock-out-text">Unavailable</p>
+          <% } %>
         </div>
 
       </div>
@@ -136,13 +186,23 @@
 
   document.querySelectorAll('.item-card').forEach(card => {
     const itemId = card.dataset.id;
+    const maxStock = parseInt(card.dataset.stock) || 0; // 👈 Get max stock
     const plusBtn = card.querySelector('.plus');
     const minusBtn = card.querySelector('.minus');
     const qtySpan = card.querySelector('.qty-value');
 
+    // If item is out of stock, these won't exist
+    if (!plusBtn || !minusBtn || !qtySpan) return;
+
     let quantity = parseInt(qtySpan.textContent) || 0;
 
     plusBtn.addEventListener('click', async () => {
+      // 🛑 Check current quantity against stock
+      if (quantity >= maxStock) {
+        alert("Cannot add more! Out of stock.");
+        return;
+      }
+
       quantity++;
       cartCount++;
 

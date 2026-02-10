@@ -21,12 +21,14 @@ exports.ifLoggedIn = async (req, res, next) => {
     const { token } = req.cookies;
     if (token) {
         try {
-             // Verify token validity even here
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            // If valid, redirect home
-            return res.redirect('/');
+            req.user = await User.findById(decoded.id);     
+            if (req.user.name) {
+                return res.redirect('/');
+            }else{
+                return res.redirect('/auth/save-name');
+            }
         } catch (e) {
-            // If invalid, proceed to login page
             return next();
         }
     }

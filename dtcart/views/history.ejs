@@ -81,7 +81,7 @@
     <%- include('components/topBar', { user }) %>
 
     <div class="history-container">
-      <h2 class="history-title">Payment History</h2>
+      <h2 class="history-title">Purchase History</h2>
 
       <% if (purchases && purchases.length > 0) { %>
         <% purchases.forEach(purchase => { %>
@@ -119,6 +119,116 @@
     </div>
 
     <%- include('components/navbar', { page: 'history' }) %>
+    
+    <% if (typeof purchaseSuccess !== 'undefined' && purchaseSuccess) { %>
+      <!-- Success Modal -->
+      <div id="successModal" class="modal-overlay">
+        <div class="modal-content">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h3>Purchase Success!</h3>
+          <p>Your items have been ordered successfully.</p>
+          <button class="modal-close-btn" onclick="closeModal()">Great!</button>
+        </div>
+      </div>
+
+      <style>
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2000;
+          backdrop-filter: blur(4px);
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+          background: #fff;
+          padding: 2rem;
+          border-radius: 20px;
+          text-align: center;
+          width: 85%;
+          max-width: 320px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+          transform: translateY(0);
+          animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .success-icon {
+          width: 64px;
+          height: 64px;
+          background: #4bb543;
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 1.5rem;
+          box-shadow: 0 4px 12px rgba(75, 181, 67, 0.3);
+        }
+
+        .success-icon svg {
+          width: 32px;
+          height: 32px;
+        }
+
+        .modal-content h3 {
+          margin: 0 0 0.5rem;
+          color: var(--text-primary);
+          font-size: 1.25rem;
+        }
+
+        .modal-content p {
+          color: var(--text-secondary);
+          margin-bottom: 1.5rem;
+          font-size: 0.95rem;
+        }
+
+        .modal-close-btn {
+          background: var(--primary-color, #007bff);
+          color: white;
+          border: none;
+          padding: 0.8rem 2rem;
+          border-radius: 12px;
+          font-weight: 600;
+          width: 100%;
+          cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      </style>
+
+      <script>
+        function closeModal() {
+          const modal = document.getElementById('successModal');
+          modal.style.opacity = '0';
+          modal.style.transition = 'opacity 0.3s ease';
+          setTimeout(() => {
+            modal.remove();
+          }, 300);
+        }
+        
+        // Auto-close after 5 seconds
+        setTimeout(closeModal, 5000);
+      </script>
+    <% } %>
 
   </div>
 </body>

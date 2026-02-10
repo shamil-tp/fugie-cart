@@ -17,6 +17,7 @@ router.get('/', isLoggedIn, viewController.getHomePage);
 router.get('/cart', isLoggedIn, viewController.getCartPage);
 router.post('/cart', isLoggedIn, viewController.buyItems);
 router.get('/recharge', isLoggedIn, viewController.getPaymentPage);
+router.get('/recharge/intent', isLoggedIn, viewController.getIntentPage);
 router.get('/history', isLoggedIn, viewController.getHistoryPage);
 
 // Auth Routes
@@ -40,7 +41,7 @@ router.post('/purchases', isLoggedIn, purchaseController.createPurchase);
 
 // Recharge Routes
 router.get('/recharges', isLoggedIn, rechargeController.getAllRecharges);
-router.post('/recharges', isLoggedIn, rechargeController.createRecharge);
+router.post('/recharge', isLoggedIn, rechargeController.createRecharge);
 
 // Request Routes
 router.get('/requests', isLoggedIn, requestController.getAllRequests);

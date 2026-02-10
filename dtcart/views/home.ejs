@@ -70,20 +70,55 @@
 
     .stock-indicator {
       font-size: 0.75rem;
-      background: #ecfdf5;
-      color: #059669;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-weight: 700;
-      border: 1px solid #c0fbe4;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 500;
+      border: none;
     }
 
     .stock-out-text {
       color: #ef4444;
       font-size: 12px;
       font-weight: 600;
+    }
+
+    /* Modal improvements */
+    .modal-content {
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      animation: modalSlide 0.3s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      color: #1e293b;
+    }
+
+    .modal-content p {
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .modal-content button {
+      background: #1e1e1e;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .modal-content button:active {
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -158,11 +193,20 @@
     </div>
   </div>
 
+  <div id="stockModal" class="modal hidden">
+    <div class="modal-content">
+      <div style="font-size: 3rem; margin-bottom: 10px;">⚠️</div>
+      <h2>Stock Alert</h2>
+      <p id="stockModalMsg">Cannot add more items. Out of stock!</p>
+      <button onclick="document.getElementById('stockModal').classList.add('hidden')" style="margin-top: 20px; width: 100%;">Got it</button>
+    </div>
+  </div>
+
   <div class="desktop-message">
     <p>This application is only available on mobile devices.</p>
   </div>
 <script>
-  const needsName = <%= user.name ? 'false' : 'true' %>;
+  const needsName = <%- JSON.stringify(!user.name) %>;
 
   if (needsName) {
     document.getElementById('nameModal').classList.remove('hidden');
@@ -214,7 +258,7 @@
     plusBtn.addEventListener('click', () => {
       // 🛑 Check current quantity against stock
       if (quantity >= maxStock) {
-        alert("Cannot add more! Out of stock.");
+        document.getElementById('stockModal').classList.remove('hidden');
         return;
       }
 

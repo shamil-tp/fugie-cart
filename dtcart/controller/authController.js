@@ -31,14 +31,12 @@ exports.login = async (req, res) => {
         let user = await User.findOne({ phone });
 
         if (!user) {
-            // Register user if not exists (implicit registration as per common OTP flows, or strict login?)
-            // Assuming strict login based on "register" usually being separate, but for OTP often combined.
-            // Let's create a new user if one doesn't exist, or just return error?
-            // User asked for "complete authentication", usually implies signup.
-            // Let's create a partial user or just wait for verify to create?
-            // Actually, best to just find or create here.
-            user = await User.create({ phone });
-        }
+        return res.status(400).json({
+        success: false,
+        message: 'User not found. Please signup first.'
+    });
+}
+
 
         // Generate 4 digit OTP
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -104,18 +102,21 @@ exports.verifyOtp = async (req, res) => {
     }
 };
 
-exports.logout = async (req, res) => {
+exports.logout = (req, res) => {
     res.cookie('token', null, {
         expires: new Date(Date.now()),
         httpOnly: true
     });
 
-    res.status(200).json({
-        success: true,
-        message: "Logged out successfully"
-    });
+    return res.redirect('/auth/login');
 };
+
 
 exports.getLoginPage = (req, res) => {
     res.render('login');
 };
+
+
+
+
+

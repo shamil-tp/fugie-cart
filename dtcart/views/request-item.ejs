@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Item</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .request-box {
+            background: var(--card-background);
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .request-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            display: block;
+            color: var(--text-secondary);
+        }
+
+        .request-input {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+
+<body>
+<div class="mobile-container">
+
+    <header class="page-header">
+        <h1>Request an Item</h1>
+    </header>
+
+    <form class="request-box" method="post" action="/items/request">
+        <label class="request-label">Item name</label>
+        <input
+            type="text"
+            id="itemName"
+            class="request-input"
+            placeholder="Eg: Cold Coffee, Sandwich..."
+            name="item"
+        />
+
+        <button class="primary-btn" type="submit">
+            Submit Request
+        </button>
+    </form>
+<p class="text-success"><%=msg%></p>
+
+</div>
+
+<div class="desktop-message">
+    <p>This application is only available on mobile devices.</p>
+</div>
+
+<%- include('components/navbar', { page: 'request' }) %>
+</body>
+</html>

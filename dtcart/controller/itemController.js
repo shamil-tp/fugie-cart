@@ -1,4 +1,5 @@
 const Item = require('../models/Item');
+const Request = require('../models/Request')
 
 exports.getAllItems = async (req, res) => {
     try {
@@ -49,3 +50,23 @@ exports.createItem = async (req, res) => {
         });
     }
 };
+
+exports.requestItem = async(req,res) => {
+    try{
+        const item = req.body.item.trim()
+        await Request.create({
+            id:Date.now(),
+            text:item,
+            user:req.user.id,
+            userName:req.user.name
+        })
+        // return res.redirect('/items/request')
+    return res.render('request-item',{msg:`requested successfully for ${item}`});
+
+    }catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}

@@ -17,15 +17,21 @@ exports.getAllRecharges = async (req, res) => {
 
 exports.createRecharge = async (req, res) => {
     try {
-        const recharge = await Recharge.create(req.body);
-        res.status(201).json({
-            success: true,
-            recharge
+        const { amount, transactionid } = req.body;
+        
+        await Recharge.create({
+            id: Date.now().toString(),
+            user: req.user._id,
+            userName: req.user.name,
+            amount,
+            transactionid,
+            text: `Recharge request for ₹${amount}`
         });
+
+        // Redirect back to payment page to show the new history item
+        return res.redirect('/recharge');
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        console.error(error);
+        return res.redirect('/recharge'); // Simple error handling for now
     }
 };

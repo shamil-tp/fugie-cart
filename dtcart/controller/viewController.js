@@ -33,10 +33,14 @@ exports.getCartPage = async (req, res) => {
             });
         }
 
+        const emptyCartError = req.session.emptyCartError;
+        delete req.session.emptyCartError;
+
         res.render('cart', {
             user: req.user,
             cartItems: Object.values(cart.items),
             total: cart.totalPrice,
+            emptyCartError,
             page: 'cart'
         });
     } catch (error) {
@@ -67,7 +71,8 @@ exports.buyItems = async (req, res) => {
 
         // 1. Validate Cart
         if (!cart || !cart.items || Object.keys(cart.items).length === 0) {
-            return res.status(400).send("Your cart is empty.");
+            req.session.emptyCartError = true;
+            return res.redirect('/cart');
         }
 
         // 2. Secure Amount Calculation (Server-side)

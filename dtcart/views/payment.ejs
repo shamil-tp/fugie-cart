@@ -112,13 +112,24 @@
 
 
     <!-- Proceed Payment -->
-   <button class="btn-pay" onclick="window.location.href='/recharge/intent'">
-  Proceed Payment
-</button>
+    <!-- Conversion Info -->
+    <div style="background: #e0f2fe; color: #0369a1; padding: 12px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: 500; font-size: 0.9rem;">
+      ℹ️ ₹1 = 1 🪙
+    </div>
 
 
     <!-- Transaction ID Input -->
     <form action="/recharge" method="POST" class="txn-box">
+      <label>Amount (₹)</label>
+      <input
+        type="number"
+        name="amount"
+        placeholder="Enter amount"
+        required
+        min="1"
+        style="margin-bottom: 20px;"
+      />
+
       <label>Transaction ID (last 4 digits)</label>
       <input
         type="text"
@@ -131,7 +142,7 @@
       />
 
       <button type="submit" class="btn-pay" style="margin-top:14px">
-        Submit
+        Proceed Payment
       </button>
     </form>
 

@@ -54,16 +54,30 @@
       z-index: 2;
     }
 
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
     .item-name {
-      font-size: 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1e293b;
       margin: 0;
     }
 
-    .stock-count {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      font-weight: 400;
-      margin-left: 4px;
+    .stock-indicator {
+      font-size: 0.75rem;
+      background: #ecfdf5;
+      color: #059669;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      border: 1px solid #c0fbe4;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
     }
 
     .stock-out-text {
@@ -148,7 +162,7 @@
     <p>This application is only available on mobile devices.</p>
   </div>
 <script>
-  const needsName = <%= !user.name %>;
+  const needsName = <%= user.name ? 'false' : 'true' %>;
 
   if (needsName) {
     document.getElementById('nameModal').classList.remove('hidden');
@@ -172,6 +186,7 @@
   });
 
   const buyFab = document.getElementById('buyFab');
+  let cartQueue = Promise.resolve(); // 🔄 Sequential request queue (Silent)
 
   // 🔢 Calculate initial cart count from server-rendered values
   let cartCount = 0;
@@ -196,7 +211,7 @@
 
     let quantity = parseInt(qtySpan.textContent) || 0;
 
-    plusBtn.addEventListener('click', async () => {
+    plusBtn.addEventListener('click', () => {
       // 🛑 Check current quantity against stock
       if (quantity >= maxStock) {
         alert("Cannot add more! Out of stock.");
@@ -209,14 +224,17 @@
       qtySpan.textContent = quantity;
       buyFab.classList.remove('hidden'); // ✅ fade in
 
-      await fetch('/cart/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemId, qty: 1 })
-      });
+      // 📥 Queue the request silently
+      cartQueue = cartQueue.then(() => 
+        fetch('/cart/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId, qty: 1 })
+        })
+      ).catch(err => console.error("Sync error:", err));
     });
 
-    minusBtn.addEventListener('click', async () => {
+    minusBtn.addEventListener('click', () => {
       if (quantity > 0) {
         quantity--;
         cartCount--;
@@ -228,11 +246,14 @@
           buyFab.classList.add('hidden');
         }
 
-        await fetch('/cart/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ itemId, qty: -1 })
-        });
+        // 📥 Queue the request silently
+        cartQueue = cartQueue.then(() => 
+          fetch('/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ itemId, qty: -1 })
+          })
+        ).catch(err => console.error("Sync error:", err));
       }
     });
   });

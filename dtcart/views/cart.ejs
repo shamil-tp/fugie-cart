@@ -11,8 +11,10 @@
 <body>
     <div class="mobile-container">
         <header class="page-header">
-            <h1>View Cart</h1>
-        </header>
+  <button class="back-btn" onclick="window.location.href='/'">←</button>
+  <h1>View Cart</h1>
+</header>
+
 
         <div class="cart-items-list">
             <% if (typeof cartItems !== 'undefined' && cartItems.length > 0) { %>
@@ -42,13 +44,14 @@
             <% } %>
         </div>
 
-        <div class="cart-footer">
+        <form class="cart-footer" action="/cart" method="post">
             <div class="grand-total-section">
                 <span>Grand Total</span>
                 <span class="grand-total-amount">$<%= (typeof total !== 'undefined' ? total : 0).toFixed(2) %></span>
             </div>
-            <button class="primary-btn checkout-btn">Proceed to Buy</button>
-        </div>
+            <input type="number" hidden value="<%= (typeof total !== 'undefined' ? total : 0).toFixed(2) %>" name="amount">
+            <button class="primary-btn checkout-btn" type="submit">Proceed to Buy</button>
+        </form>
 
         <%- include('components/navbar', { page: 'cart' }) %>
     </div>

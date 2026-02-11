@@ -105,11 +105,16 @@
                     <%= item.item %>
                   </span>
                   <span class="item-price">
-                    ₹<%= item.amount %> × <%= item.quantity %>
+                    <% const unitPrice = item.quantity > 0 ? (item.amount / item.quantity) : 0; %>
+                    ₹<%= unitPrice %> × <%= item.quantity %> = <b>₹<%= item.amount %></b>
                   </span>
                 </div>
               <% }) %>
             </div>
+            
+            <!-- <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px; text-align: right;">
+                Txn ID: <%= purchase.id || purchase._id %>
+            </div> -->
 
           </div>
         <% }) %>

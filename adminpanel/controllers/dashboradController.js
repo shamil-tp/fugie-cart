@@ -40,7 +40,7 @@ exports.getUsers = async (req, res) => {
 
 exports.getPayments = async (req, res) => {
     try {
-        const purchases = await Purchase.find();
+        const purchases = await Purchase.find().sort({_id:-1});
         res.render('paymentHistory', { purchases,page:'payments' });
     } catch (error) {
         res.status(500).send('Error fetching payments');

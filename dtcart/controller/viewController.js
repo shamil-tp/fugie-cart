@@ -5,6 +5,8 @@ const User = require('../models/User')
 exports.getHomePage = async (req, res) => {
   try {
     const items = await Item.find();
+    // Sort items: available items first, out-of-stock items last
+    items.sort((a, b) => (a.quantity === 0) - (b.quantity === 0));
     const cart = req.session.cart || { items: {} };
 
     res.render('home', {

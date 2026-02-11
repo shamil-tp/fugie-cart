@@ -64,6 +64,12 @@
             margin-top: 8px;
             text-align: right;
         }
+        .txn-date {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -82,19 +88,39 @@
                         <div class="txn-user"><%= purchase.userName %></div>
                         <div class="txn-amount">- ₹<%= purchase.amount %></div>
                     </div>
-                    <div class="txn-items">
-                        <% if(purchase.items && purchase.items.length > 0) { %>
-                            <% purchase.items.forEach(pi => { %>
-                                <div class="item-row">
-                                    <span><%= pi.item %> (x<%= pi.quantity %>)</span>
-                                    <span>₹<%= pi.amount %></span>
-                                </div>
-                            <% }) %>
-                        <% } else { %>
-                            <span>No items listed</span>
-                        <% } %>
+                    
+                    <!-- View Details Button -->
+                    <button class="view-details-btn" onclick="openTxnModal('<%= purchase._id %>')">
+                        View Details
+                    </button>
+
+                    <!-- Hidden Data for Modal -->
+                    <div id="txn-data-<%= purchase._id %>" style="display:none;">
+                        <input type="hidden" class="data-id" value="<%= purchase.id || purchase._id %>">
+                        <input type="hidden" class="data-user" value="<%= purchase.userName %>">
+                        <input type="hidden" class="data-total" value="<%= purchase.amount %>">
+                        <div class="data-items">
+                            <% if(purchase.items && purchase.items.length > 0) { %>
+                                <% purchase.items.forEach(pi => { %>
+                                    <% 
+                                      // Calculate unit price safely
+                                      const unitPrice = pi.quantity > 0 ? (pi.amount / pi.quantity) : 0;
+                                    %>
+                                    <div class="modal-item-row">
+                                        <span class="item-name"><%= pi.item %></span>
+                                        <span class="item-calc">
+                                            ₹<%= unitPrice.toFixed(2) %> x <%= pi.quantity %> = <b>₹<%= pi.amount %></b>
+                                        </span>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="modal-item-row">No items listed</div>
+                            <% } %>
+                        </div>
                     </div>
+
                     <div class="txn-id">Txn ID: <%= purchase.id || purchase._id %></div>
+                    <div class="txn-date"><%= purchase.date %></div>
                 </div>
             <% }) %>
         <% } else { %>
@@ -102,6 +128,170 @@
                 No payment history.
             </div>
         <% } %>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="txnModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalUser">User Name</h2>
+                <span class="close-modal" onclick="closeTxnModal()">&times;</span>
+            </div>
+            
+            <div id="modalItems" class="modal-items-list">
+                <!-- Items injected here -->
+            </div>
+
+            <div class="modal-footer">
+                <div class="modal-total">Total: <span id="modalTotal">₹0</span></div>
+                <div class="modal-txn-id">ID: <span id="modalTxnId">...</span></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* View Details Button */
+        .view-details-btn {
+            background: #e2e8f0;
+            border: none;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+        .view-details-btn:hover {
+            background: #cbd5e1;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .modal.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(10px);
+            transition: transform 0.2s ease;
+        }
+        .modal.visible .modal-content {
+            transform: translateY(0);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #1e293b;
+        }
+        .close-modal {
+            font-size: 24px;
+            color: #94a3b8;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-items-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+        .modal-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8fafc;
+            font-size: 14px;
+        }
+        .modal-item-row:last-child {
+            border-bottom: none;
+        }
+        .item-name {
+            font-weight: 500;
+            color: #334155;
+        }
+        .item-calc {
+            color: #64748b;
+            font-size: 13px;
+        }
+        .item-calc b {
+            color: #0f172a;
+        }
+        .modal-footer {
+            border-top: 1px solid #f1f5f9;
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-total {
+            font-weight: 600;
+            font-size: 16px;
+            color: #ef4444;
+        }
+        .modal-txn-id {
+            font-size: 11px;
+            color: #cbd5e1;
+        }
+    </style>
+
+    <script>
+        function openTxnModal(txnId) {
+            const dataDiv = document.getElementById('txn-data-' + txnId);
+            if (!dataDiv) return;
+
+            // Extract data
+            const user = dataDiv.querySelector('.data-user').value;
+            const total = dataDiv.querySelector('.data-total').value;
+            const id = dataDiv.querySelector('.data-id').value;
+            const itemsHtml = dataDiv.querySelector('.data-items').innerHTML;
+
+            // Populate Modal
+            document.getElementById('modalUser').textContent = user;
+            document.getElementById('modalTotal').textContent = '- ₹' + total;
+            document.getElementById('modalTxnId').textContent = id;
+            document.getElementById('modalItems').innerHTML = itemsHtml;
+
+            // Show Modal
+            document.getElementById('txnModal').classList.add('visible');
+        }
+
+        function closeTxnModal() {
+            document.getElementById('txnModal').classList.remove('visible');
+        }
+
+        // Close on outside click
+        document.getElementById('txnModal').addEventListener('click', (e) => {
+            if (e.target.id === 'txnModal') closeTxnModal();
+        });
+    </script>
     </div>
 
     <%- include('partials/navbar', { page: 'payments' }) %>

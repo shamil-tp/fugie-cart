@@ -33,6 +33,6 @@ app.use(express.static('public'));
 const routes = require('./routes/index');
 app.use('/', routes);
 
-app.listen(port, () => {
+app.listen(port,"192.168.29.178", () => {
   console.log(`Server is running on port ${port}`);
 });

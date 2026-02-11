@@ -20,15 +20,16 @@
     <div class="login-section">
       <div class="input-group">
         <label for="mobile">Mobile Number</label>
-        <input type="tel" id="mobile" placeholder="1234567890" inputmode="numeric" maxlength="10">
+        <div class="input-with-button">
+          <input type="tel" id="mobile" placeholder="Enter mobile number" inputmode="numeric" maxlength="10">
+          <button id="send-otp-btn" class="append-btn">Send OTP</button>
+        </div>
       </div>
-
-      <button id="send-otp-btn" class="action-btn">Send OTP</button>
 
       <div id="otp-input-container" class="hidden">
         <div class="input-group">
           <label for="otp">OTP Code</label>
-          <input type="text" id="otp" placeholder="123456" inputmode="numeric" maxlength="6">
+          <input type="text" id="otp" placeholder="Enter the 4 digit OTP code" inputmode="numeric" maxlength="6">
         </div>
       </div>
 
@@ -94,8 +95,10 @@
             otpInputContainer.classList.add('fade-in-up');
 
             otpInput.focus();
-            sendOtpBtn.textContent = "Resend OTP";
-            sendOtpBtn.classList.add('secondary');
+            // Disable the send button - user must refresh to resend
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.style.opacity = '0.5';
+            sendOtpBtn.style.cursor = 'not-allowed';
           }
           // For dev purposes, maybe alert the OTP if returned (it is in my controller)
           if (data.otp) {

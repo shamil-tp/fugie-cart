@@ -1,164 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/login.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/login.css">
-</head>
-
-<body>
-  <div class="mobile-container">
-    <div class="brand-section">
-      <img src="/logo.png" alt="Brand Logo" class="brand-image">
-    </div>
-    <div class="login-section">
-      <div class="input-group">
-        <label for="mobile">Mobile Number</label>
-        <div class="input-with-button">
-          <input type="tel" id="mobile" placeholder="Enter mobile number" inputmode="numeric" maxlength="10">
-          <button id="send-otp-btn" class="append-btn">Send OTP</button>
-        </div>
+  <body>
+    <div class="mobile-container">
+      <div class="brand-section">
+        <h1 class="brand-title">Lubi's Cafe</h1>
+        <img src="/giflogo.gif" alt="Brand Logo" class="brand-image" />
       </div>
 
-      <div id="otp-input-container" class="hidden">
+      <div class="login-section">
         <div class="input-group">
-          <label for="otp">OTP Code</label>
-          <input type="text" id="otp" placeholder="Enter the 4 digit OTP code" inputmode="numeric" maxlength="6">
+          <label for="mobile">Mobile Number</label>
+          <div class="input-with-button">
+            <input
+              type="tel"
+              id="mobile"
+              placeholder="Enter mobile number"
+              inputmode="numeric"
+              maxlength="10"
+            />
+            <button id="send-otp-btn" class="append-btn">Send OTP</button>
+          </div>
         </div>
+
+        <div id="otp-input-container" class="hidden">
+          <div class="input-group">
+            <label for="otp">OTP Code</label>
+            <input
+              type="text"
+              id="otp"
+              placeholder="Enter the 4 digit OTP code"
+              inputmode="numeric"
+              maxlength="6"
+            />
+          </div>
+        </div>
+
+        <button id="login-btn" class="primary-btn hidden">
+          Verify & Login
+        </button>
       </div>
-
-      <button id="login-btn" class="primary-btn">Verify & Login</button>
-      
-        
-
     </div>
-  </div>
 
-  <div class="desktop-message">
-    <p>This application is only available on mobile devices.</p>
-  </div>
+    <div class="desktop-message">
+      <p>This application is only available on mobile devices.</p>
+    </div>
 
-  <script>
-    const sendOtpBtn = document.getElementById('send-otp-btn');
-    const otpInputContainer = document.getElementById('otp-input-container');
-    const otpInput = document.getElementById('otp');
-    const mobileInput = document.getElementById('mobile');
-    const loginBtn = document.getElementById('login-btn');
+    <script>
+      const sendOtpBtn = document.getElementById("send-otp-btn");
+      const otpInputContainer = document.getElementById("otp-input-container");
+      const otpInput = document.getElementById("otp");
+      const mobileInput = document.getElementById("mobile");
+      const loginBtn = document.getElementById("login-btn");
 
-    // Create error message element
-    const errorMsg = document.createElement('p');
-    errorMsg.style.color = '#ef4444';
-    errorMsg.style.fontSize = '0.75rem';
-    errorMsg.style.marginTop = '0.25rem';
-    errorMsg.style.display = 'none';
-    mobileInput.parentNode.appendChild(errorMsg);
+      // Create error message element
+      const errorMsg = document.createElement("p");
+      errorMsg.style.color = "#ef4444";
+      errorMsg.style.fontSize = "0.75rem";
+      errorMsg.style.marginTop = "0.25rem";
+      errorMsg.style.display = "none";
+      document.querySelector(".input-group").appendChild(errorMsg);
 
-    sendOtpBtn.addEventListener('click', async () => {
-      const mobileNumber = mobileInput.value.trim();
+      sendOtpBtn.addEventListener("click", async () => {
+        const mobileNumber = mobileInput.value.trim();
 
-      // Regex for exactly 10 digits
-      const mobileRegex = /^\d{10}$/;
+        // Regex for exactly 10 digits
+        const mobileRegex = /^\d{10}$/;
 
-      if (!mobileRegex.test(mobileNumber)) {
-        errorMsg.textContent = "Please enter a valid 10-digit mobile number.";
-        errorMsg.style.display = 'block';
-        mobileInput.style.borderColor = '#ef4444';
-        return;
-      }
-
-      // Clear error if valid
-      errorMsg.style.display = 'none';
-      mobileInput.style.borderColor = '#e5e7eb';
-
-      try {
-        const response = await fetch('/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            phone: mobileNumber
-          })
-        });
-        const data = await response.json();
-
-        if (data.success) {
-          // Show OTP input container with animation
-          if (otpInputContainer.classList.contains('hidden')) {
-            otpInputContainer.classList.remove('hidden');
-            otpInputContainer.classList.add('fade-in-up');
-
-            otpInput.focus();
-            // Disable the send button - user must refresh to resend
-            sendOtpBtn.disabled = true;
-            sendOtpBtn.style.opacity = '0.5';
-            sendOtpBtn.style.cursor = 'not-allowed';
-          }
-          // For dev purposes, maybe alert the OTP if returned (it is in my controller)
-          if (data.otp) {
-            console.log("OTP:", data.otp);
-            alert("OTP sent: " + data.otp);
-          }
-        } else {
-          alert(data.message || "Failed to send OTP");
+        if (!mobileRegex.test(mobileNumber)) {
+          errorMsg.textContent = "Please enter a valid 10-digit mobile number.";
+          errorMsg.style.display = "block";
+          mobileInput.style.borderColor = "#ef4444";
+          return;
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert("Something went wrong");
-      }
-    });
 
-    // Clear error on input
-    mobileInput.addEventListener('input', () => {
-      errorMsg.style.display = 'none';
-      mobileInput.style.borderColor = '#e5e7eb';
-    });
+        // Clear error if valid
+        errorMsg.style.display = "none";
+        mobileInput.style.borderColor = "#e5e7eb";
 
-    // Basic check on Verify button
-    loginBtn.addEventListener('click', async () => {
-      if (otpInputContainer.classList.contains('hidden')) {
-        errorMsg.textContent = "Please send OTP first.";
-        errorMsg.style.display = 'block';
-        return;
-      }
-      const otpCode = otpInput.value.trim();
-      const mobileNumber = mobileInput.value.trim();
+        try {
+          const response = await fetch("/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              phone: mobileNumber,
+            }),
+          });
+          const data = await response.json();
 
-      if (otpCode.length < 4) { // OTP is 4 digits in controller
-        alert("Please enter a valid OTP.");
-        return;
-      }
+          if (data.success) {
+            // Show OTP input container with animation
+            if (otpInputContainer.classList.contains("hidden")) {
+              otpInputContainer.classList.remove("hidden");
+              otpInputContainer.classList.add("fade-in-up");
 
-      try {
-        const response = await fetch('/auth/login/verify', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            phone: mobileNumber,
-            otp: otpCode
-          })
-        });
-        const data = await response.json();
+              // Show login button
+              loginBtn.classList.remove("hidden");
 
-        if (data.success) {
-          window.location.href = '/';
-        } else {
-          alert(data.message || "Invalid OTP");
+              otpInput.focus();
+              // Disable the send button - user must refresh to resend
+              sendOtpBtn.disabled = true;
+              sendOtpBtn.style.opacity = "0.5";
+              sendOtpBtn.style.cursor = "not-allowed";
+            }
+            // For dev purposes, maybe alert the OTP if returned (it is in my controller)
+            if (data.otp) {
+              console.log("OTP:", data.otp);
+              alert("OTP sent: " + data.otp);
+            }
+          } else {
+            alert(data.message || "Failed to send OTP");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Something went wrong");
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert("Something went wrong during verification");
-      }
-    });
-  </script>
-</body>
+      });
 
+      // Clear error on input
+      mobileInput.addEventListener("input", () => {
+        errorMsg.style.display = "none";
+        mobileInput.style.borderColor = "#e5e7eb";
+      });
+
+      // Basic check on Verify button
+      loginBtn.addEventListener("click", async () => {
+        if (otpInputContainer.classList.contains("hidden")) {
+          errorMsg.textContent = "Please send OTP first.";
+          errorMsg.style.display = "block";
+          return;
+        }
+        const otpCode = otpInput.value.trim();
+        const mobileNumber = mobileInput.value.trim();
+
+        if (otpCode.length < 4) {
+          // OTP is 4 digits in controller
+          alert("Please enter a valid OTP.");
+          return;
+        }
+
+        try {
+          const response = await fetch("/auth/login/verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              phone: mobileNumber,
+              otp: otpCode,
+            }),
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            window.location.href = "/";
+          } else {
+            alert(data.message || "Invalid OTP");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Something went wrong during verification");
+        }
+      });
+    </script>
+  </body>
 </html>

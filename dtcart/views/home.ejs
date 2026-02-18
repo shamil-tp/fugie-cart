@@ -10,9 +10,39 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/home.css">
   <style>
+    .tags{
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      overflow-x: scroll;
+      scrollbar-width: none;
+    }
+    .tags ul{
+      list-style: none;
+      display: flex;
+      gap: 10px;
+    }
     .modal.hidden {
       display: none;
+      text-decoration: none;
     }
+    .tags ul li{
+      background-color: rgb(152, 107, 255);
+      color:white;
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-weight: 600;
+    }
+.tags ul li a {
+  text-decoration: none;
+  color: white;
+}
+
+.active-tag {
+  background: black;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
 
     .modal {
       position: fixed;
@@ -130,37 +160,64 @@
 
     <h2 class="items-heading">Items</h2>
 
+    <div class="tags">
+  <ul>
+    <% const tagList = ['all','tea','coffee','snacks','drinks','chips','cake','doughnuts','lays','chocopie']; %>
+
+    <% tagList.forEach(tag => { %>
+      <li 
+        data-tag="<%= tag %>" 
+        onclick="filterByTag('<%= tag %>', this)">
+        <%= tag %>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+
 
     <div class="items-grid">
       <% if (items && items.length > 0) { %>
       <% items.forEach(function(item) { %>
-      <div class="item-card <%= item.quantity <= 0 ? 'out-of-stock' : '' %>" data-id="<%= item._id %>" data-stock="<%= item.quantity %>">
-        <div class="item-image-container">
-          <img src="<%= item.img || './images/pic_10.jpg' %>" alt="<%= item.name %>" class="item-image" onerror="this.src='./images/pic_10.jpg'">
-          <% if (item.quantity <= 0) { %>
-            <div class="stock-out-badge">Stock Out</div>
-          <% } %>
-        </div>
-        <div class="item-details">
-          <div class="item-header">
-            <h3 class="item-name"><%= item.name %></h3>
-            <span class="stock-indicator">Stock: <%= item.quantity %></span>
-          </div>
-          <p class="item-price">$<%= item.price.toFixed(2) %></p>
-          <% if (item.quantity > 0) { %>
-            <div class="quantity-controls">
-              <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
-              <span class="qty-value">
-                <%= cart.items[item._id]?.quantity || 0 %>
-              </span>
-              <button class="qty-btn plus" aria-label="Increase quantity">+</button>
-            </div>
-          <% } else { %>
-            <p class="stock-out-text">Unavailable</p>
-          <% } %>
-        </div>
+      <div class="item-card <%= item.quantity <= 0 ? 'out-of-stock' : '' %>" 
+     data-id="<%= item._id %>" 
+     data-stock="<%= item.quantity %>"
+     data-tags="<%= item.tags && item.tags.length ? item.tags.join(',') : '' %>">
 
+  <div class="item-image-container">
+    <img src="<%= item.img || './images/pic_10.jpg' %>" 
+         alt="<%= item.name %>" 
+         class="item-image" 
+         onerror="this.src='./images/pic_10.jpg'">
+
+    <% if (item.quantity <= 0) { %>
+      <div class="stock-out-badge">Stock Out</div>
+    <% } %>
+  </div>
+
+  <div class="item-details">
+    <div class="item-header">
+      <h3 class="item-name"><%= item.name %></h3>
+      <span class="stock-indicator">Stock: <%= item.quantity %></span>
+    </div>
+
+    <p class="item-price">$<%= item.price.toFixed(2) %></p>
+
+    <% if (item.quantity > 0) { %>
+      <div class="quantity-controls">
+        <button class="qty-btn minus" aria-label="Decrease quantity">-</button>
+        <span class="qty-value">
+          <%= cart.items[item._id]?.quantity || 0 %>
+        </span>
+        <button class="qty-btn plus" aria-label="Increase quantity">+</button>
       </div>
+    <% } else { %>
+      <p class="stock-out-text">Unavailable</p>
+    <% } %>
+  </div>
+
+</div>
+
 
       <% }); %>
       <!-- Request Item Card -->
@@ -207,6 +264,36 @@
   </div>
 <script>
   const needsName = <%- JSON.stringify(!user.name) %>;
+
+  document.addEventListener("DOMContentLoaded", () => {
+  const firstTag = document.querySelector('.tags ul li');
+  if (firstTag) firstTag.click();
+});
+
+
+function filterByTag(tag, element) {
+  const cards = document.querySelectorAll('.item-card:not(.request-card)');
+  const tagButtons = document.querySelectorAll('.tags ul li');
+
+  tagButtons.forEach(btn => {
+    btn.style.backgroundColor = 'rgb(152, 107, 255)';
+  });
+
+  element.style.backgroundColor = 'black';
+
+  cards.forEach(card => {
+    const itemTags = card.dataset.tags?.split(',') || [];
+
+    if (tag === 'all') {
+      card.style.display = 'block';
+    } else if (itemTags.includes(tag)) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
 
   if (needsName) {
     document.getElementById('nameModal').classList.remove('hidden');

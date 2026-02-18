@@ -5,7 +5,8 @@ const iSchema = new mongoose.Schema({
   img:String,
   name:String,
   price:Number,
-  quantity:Number
+  quantity:Number,
+  tags:[String]
 })
 
 module.exports=mongoose.model('Item', iSchema)

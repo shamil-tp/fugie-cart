@@ -60,6 +60,8 @@
     font-weight: 600;
     margin-bottom: 0.75rem;
     color: var(--text-primary);
+    padding-bottom: 5px;
+    border-bottom: .5px solid rgb(79, 79, 79)
 }
 
 .buy-fab {
